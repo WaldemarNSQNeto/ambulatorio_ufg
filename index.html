@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receituário</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>RECEITUÁRIO</h1>
+        <form id="prescriptionForm">
+            <label for="patientName">Nome do Paciente:</label>
+            <input type="text" id="patientName" required>
+            
+        <div id="medicines">
+    <div class="medicine">
+        <div class="top-row">
+            <div class="field">
+                <label for="route1">Via:</label>
+                <select id="route1" class="route">
+                    <option value="Oral" selected>Oral</option>
+                    <option value="Epidural">Epidural</option>
+                    <option value="Endovenoso">Endovenoso</option>
+                    <option value="Inalatório">Inalatório</option>
+                    <option value="Intra-arterial">Intra-arterial</option>
+                    <option value="Intradérmico">Intradérmico</option>
+                    <option value="Intramuscular">Intramuscular</option>
+                    <option value="Intraperitoneal">Intraperitoneal</option>
+                    <option value="Intratecal">Intratecal</option>
+                    <option value="Nasal">Nasal</option>
+                    <option value="Oftalmológico">Oftalmológico</option>
+                    <option value="Otológico">Otológico</option>
+                    <option value="Retal">Retal</option>
+                    <option value="Subcutâneo">Subcutâneo</option>
+                    <option value="Sublingual">Sublingual</option>
+                    <option value="Tópico">Tópico</option>
+                    <option value="Vaginal">Vaginal</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="medicine1">Item:</label>
+                <input type="text" id="medicine1" required>
+            </div>
+
+            <div class="field">
+                <label for="posology1">Posologia:</label>
+                <input type="text" id="posology1" required>
+            </div>
+
+            <div class="field">
+                <label for="quantity1">Qnt:</label>
+                <input type="text" id="quantity1" required>
+            </div>
+        </div>
+
+        <div class="bottom-row">
+            <div class="field full-width">
+                <label for="usage1">Forma de Utilização:</label>
+                <input type="text" id="usage1" required>
+            </div>
+            <button type="button" class="remove-medicine" onclick="removeMedicine(this)">&#10060;</button>
+        </div>
+    </div>
+         
+        <!-- Exibição da data com o botão -->
+
+        <div class="date-field">
+        <button type="button" onclick="addCurrentDate()">Datar</button>
+        <p id="currentDate" style="display: none;">Data: <span id="dateDisplay"></span></p>
+    </div>
+        
+     
+<div style="display: flex; flex-direction: column; align-items: center;">
+    <p id="currentDate" style="display:none;">Data:</p>
+    <div id="dateDisplayContainer" style="display: flex; align-items: center;">
+        <span id="dateDisplay"></span>
+        <button id="removeDateButton" onclick="removeDate()" style="color: red; background-color: transparent; border: none; cursor: pointer; padding-left: 10px;">Remover Data</button>
+    </div>
+</div>
+
+
+      
+            <div id="medicines">
+
+            </div>
+            <button type="button" onclick="addMedicine()">Adicionar Item</button>
+            <button type="button" onclick="generatePreview()">Gerar Pré-visualização</button>
+        </form>
+
+        <div id="preview" class="preview-container">
+            <!-- Pré-visualização será inserida aqui -->
+        </div>
+
+        <div id="previewActions" class="hidden">
+            <button onclick="editPrescription()">Editar</button>
+            <button onclick="printPrescription()">Imprimir</button>
+        </div>
+  
+    
+    </div>
+
+  
+    <script src="script.js"></script>
+</body>
+</html>
