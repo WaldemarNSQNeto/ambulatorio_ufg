@@ -1,0 +1,308 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+
+.logo {
+    display: block;
+    margin: 0 auto;
+    width: 130px;
+    height: auto;
+    text-align: center;
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    font-size: 26px; /* Aumentei um pouco o tamanho para mais destaque */
+    font-weight: bold; /* Dá mais presença ao título */
+    color: #333; /* Tom mais suave do preto para não ficar tão pesado */
+    text-transform: uppercase; /* Deixa todas as letras maiúsculas para mais impacto */
+    letter-spacing: 1.5px; /* Dá mais espaçamento entre as letras */
+    margin-bottom: 15px; /* Adiciona um espaço abaixo do título */
+    padding: 5px 0; /* Ajuste interno para melhor distribuição */
+    font-family: 'Poppins', sans-serif; /* Fonte moderna e sofisticada */
+  /* Degradê azul moderno */
+    background: linear-gradient(45deg, #007bff, #0056b3, #00aaff); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; /* Faz o texto herdar o degradê */
+
+    /* Sombra preta para destacar */
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+label {
+    font-weight: bold;
+    color: #000; /* Preto para as labels */
+}
+
+input {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    border-color: #007bff; /* Azul para a borda quando o campo é selecionado */
+    outline: none;
+}
+
+button {
+    padding: 10px;
+    background-color: #007bff; /* Azul para o botão */
+    color: white;
+    border: CENTER;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #0056b3; /* Alteração de cor ao passar o mouse */
+    transform: scale(1.05); /* Leve aumento no tamanho */
+}
+
+
+#medicines {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.medicine {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    background: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.top-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Ajusta para melhor adaptabilidade */
+    gap: 15px;
+}
+
+.bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.full-width {
+    flex-grow: 1;
+}
+
+label {
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.remove-medicine {
+    background-color: #ff4d4d;
+    color: white;
+    border: CENTER;
+    padding: 8px 8px; /* Aumentei um pouco para melhor usabilidade */
+    font-size: 5px; /* Corrigi o tamanho do texto */
+      font-weight: bold; /* Deixa o "X" mais visível */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    /* Centraliza e afasta da esquerda */
+    display: block;
+    width: fit-content; /* Mantém o tamanho do botão ajustado ao texto */
+    margin: 5px auto 10px -5px; /* Auto centraliza, 50px afasta da esquerda */
+}
+
+.remove-medicine:hover {
+    background-color: #000000; /* Tom mais escuro no hover */
+    transform: scale(1.1); /* Pequeno efeito de zoom */
+}
+
+.remove-medicine:focus {
+    outline: 3px solid #000000; /* Adiciona um foco visível para acessibilidade */
+}
+
+input, select {
+    width: 100%;
+    padding: 10px; /* Aumentei um pouco para melhorar a usabilidade */
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus {
+    border-color: #007bff; /* Foco azul */
+    outline: none; /* Remove o contorno padrão do navegador */
+}
+
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.preview-container {
+    margin-top: 25px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    background-color: #fff;
+    display: none;
+    border-radius: 8px; /* Borda arredondada */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.preview-container.visible {
+    display: block;
+}
+
+.hidden {
+    display: none;
+}
+
+.preview-container h2 {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #000; /* Preto para o título da pré-visualização */
+}
+
+.preview-container .line {
+    border-top: 2px solid #000; /* Linha preta */
+    margin: 12px 0;
+}
+
+.preview-container p {
+    font-size: 12px;
+    margin: 12px 0;
+    color: #000; /* Preto para os textos */
+}
+
+.footer {
+    text-align: center;
+    font-size: 12 px;
+    margin-top: 20px; /* Aumente esse valor para criar mais espaço acima */
+    color: #000; /* Preto para o texto do rodapé */
+    padding-top: 15px;
+    border-top: 1px solid #333; /* Cor mais escura para a linha e espessura maior */
+}
+
+.footer .line {
+    border-top: 2px solid #333; /* Linha de separação mais escura e espessa */
+    margin-top: 10px; /* Aumente para mais espaço entre a linha e o conteúdo acima */
+}
+
+.date-field {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.date-field input {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 20px;
+}
+
+.preview-footer {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.preview-footer hr {
+    border-top: 1px solid #000; /* Linha mais grossa e escura */
+    width: 20%; /* Ajuste o comprimento da linha */
+    margin: 20px auto;
+}
+
+.preview-footer p {
+    font-size: 14px;
+    margin-top: 30px;
+}
+
+.footer .line {
+    border-top: 1px solid #000;
+    margin-top: 200px;
+}
+
+@media (max-width: 768px) {
+    .top-row {
+        grid-template-columns: 1fr; /* Em telas menores, usa uma coluna só */
+    }
+    
+    .medicine {
+        padding: 10px; /* Reduz o padding em telas menores para otimizar o espaço */
+    }
+}
+
+@media print {
+    @page {
+        size: A4 landscape; /* A4 horizontal */
+        margin: 10mm; /* Pequena margem */
+    }
+
+    .print-container {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+    }
+
+    .prescription-copy {
+        width: 48%; /* Cada cópia ocupa metade da página */
+        padding: 15px;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    /* Ajusta o tamanho do texto caso ultrapasse o espaço disponível */
+    .prescription-copy p,
+    .prescription-copy h3 {
+        font-size: calc(14px - 0.2vw); /* Ajusta dinamicamente */
+        line-height: 1.2;
+    }
+
+    /* Reduz o tamanho dos campos da receita se necessário */
+    .prescription-copy p {
+        margin: 5px 0;
+    }
+}
+
