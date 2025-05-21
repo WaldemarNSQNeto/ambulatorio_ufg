@@ -1,11 +1,4 @@
-function editPrescription() {
-    document.getElementById('preview').classList.remove('visible');
-    document.getElementById('previewActions').classList.add('hidden');
-
-    // Certifique-se de que a data seja redefinida corretamente
-    removeDate();
-}
-
+let formData = {}; // Variável global para armazenar os dados do formulário
 
 function removeDate() {
     const dateDisplay = document.getElementById('dateDisplay');
@@ -109,41 +102,67 @@ function removeMedicine(button) {
 }
 
 
-// Função para remover o item específico
-function removeMedicine(button) {
-    const medicineDiv = button.closest('.medicine'); // Obtém o <div class="medicine"> que contém todo o item
-    medicineDiv.remove(); // Remove o elemento inteiro
-}
 
 
 
 // Função para gerar a pré-visualização
 function generatePreview() {
-    const patientName = document.getElementById('patientName').value;
+    const patientNameInput = document.getElementById('patientName');
+    const patientName = patientNameInput ? patientNameInput.value : '';
+
+    const dateDisplayElement = document.getElementById('dateDisplay');
+    const dateDisplayContent = dateDisplayElement ? dateDisplayElement.textContent : '';
+
     const medicinesDiv = document.getElementById('medicines');
     const previewDiv = document.getElementById('preview');
     const previewActions = document.getElementById('previewActions');
-    const dateDisplay = document.getElementById('dateDisplay').textContent;
+
+    // Armazenar dados do formulário em formData
+    // Adicione outros campos do formulário aqui se existirem (ex: patientAge, address, etc.)
+    formData = {
+        patientName: patientName,
+        dateDisplay: dateDisplayContent,
+        medicines: []
+    };
 
     // Objeto para agrupar medicamentos por via de administração
     const groupedMedicines = {};
+    // Array para manter a ordem de aparição das vias
+    const routeOrder = [];
 
     // Coletar e agrupar os medicamentos
     medicinesDiv.querySelectorAll('.medicine').forEach((medicine, index) => {
-        const route = medicine.querySelector('.route').value;
-        const medicineName = medicine.querySelector('input[id^="medicine"]').value;
-        const posology = medicine.querySelector('input[id^="posology"]').value;
-        const quantity = medicine.querySelector('input[id^="quantity"]').value;
-        const usage = medicine.querySelector('input[id^="usage"]').value;
+        const routeElement = medicine.querySelector('.route');
+        const medicineNameElement = medicine.querySelector('input[id^="medicine"]');
+        const posologyElement = medicine.querySelector('input[id^="posology"]');
+        const quantityElement = medicine.querySelector('input[id^="quantity"]');
+        const usageElement = medicine.querySelector('input[id^="usage"]');
+
+        const route = routeElement ? routeElement.value : 'Oral';
+        const medicineName = medicineNameElement ? medicineNameElement.value : '';
+        const posology = posologyElement ? posologyElement.value : '';
+        const quantity = quantityElement ? quantityElement.value : '';
+        const usage = usageElement ? usageElement.value : '';
 
         if (!groupedMedicines[route]) {
             groupedMedicines[route] = [];
+            routeOrder.push(route); // Adiciona a via à lista de ordem na primeira vez que aparece            
         }
 
-        groupedMedicines[route].push({
-            index: index + 1,
+        const medicineData = {
+            originalOrderIndex: index, // Para ordenar dentro da via, se necessário
             name: medicineName,
             posology: posology,
+            quantity: quantity,
+            usage: usage
+        };
+        groupedMedicines[route].push(medicineData);
+
+        // Adicionar ao formData
+        formData.medicines.push({
+            route: route,
+            name: medicineName,
+            posology: posology,            
             quantity: quantity,
             usage: usage
         });
@@ -151,32 +170,44 @@ function generatePreview() {
 
     // Construir o HTML da pré-visualização
     let medicinesHTML = '';
-    for (const [route, medicines] of Object.entries(groupedMedicines)) {
-        medicinesHTML += `<h3 style="text-align: center; font-size: 14px; margin-top: 20px;">Uso ${route}</h3>`;
-        medicines.forEach((medicine) => {
-            medicinesHTML += ` 
-                <p style="text-align: left; font-size: 12px; margin-top: 10px;"><strong>${medicine.index}. ${medicine.name} ${medicine.posology} -------------- ${medicine.quantity}</strong></p>
-                <p style="text-align: left; font-size: 12px; margin-left: 20px;">• ${medicine.usage}</p>
-            `;
-        });
+    let sequentialCounter = 0; // Contador para a numeração sequencial
+
+    // Opcional: garantir que os medicamentos dentro de cada via estejam na ordem original de entrada
+    for (const routeKey in groupedMedicines) {
+        groupedMedicines[routeKey].sort((a, b) => a.originalOrderIndex - b.originalOrderIndex);
     }
 
+    routeOrder.forEach(route => {
+        const medicinesInRoute = groupedMedicines[route];
+        if (medicinesInRoute && medicinesInRoute.length > 0) {
+            medicinesHTML += `<h3 style="text-align: center; font-size: 14px; margin-top: 20px;">Uso ${route}</h3>`;
+            medicinesInRoute.forEach((medicine) => {
+                sequentialCounter++; // Incrementar para cada medicamento listado
+                medicinesHTML += ` 
+                    <p style="text-align: left; font-size: 12px; margin-top: 10px;"><strong>${sequentialCounter}. ${medicine.name} ${medicine.posology} -------------- ${medicine.quantity}</strong></p>
+                    <p style="text-align: left; font-size: 12px; margin-left: 20px;">• ${medicine.usage}</p>
+                `;
+            });
+        }
+});
+
     // Adiciona a data, se existir
-    const dateHTML = dateDisplay ? `<p style="text-align: left; font-size: 10px; margin-top: 20px;">Data: ${dateDisplay}</p>` : '';
+    const dateHTML = formData.dateDisplay ? `<p style="text-align: left; font-size: 10px; margin-top: 20px;">Data: ${formData.dateDisplay}</p>` : '';
 
     // Adiciona a linha e a descrição "MÉDICO/CRM"
     const footerHTML = `
         <div style="text-align: center; margin-top: 30px">
         <hr style="border-top: 1px solid #000; width: 25%; margin: 10px auto;">
         <p style="font-size: 12px; margin-top: -5px;">MÉDICO / CRM</p> <!-- Ajuste a margem superior para diminuir o espaço -->
-    </div>
+    </div>    
     `;
 
-    previewDiv.innerHTML = `
-        <img src="https://i.imgur.com/PSEI5W9.png" alt="Logo UFG" class="logo">
+    if (previewDiv) {
+        previewDiv.innerHTML = `
+        <img src="images/LogoEbserhTrans.png" alt="Logo UFG" class="logo">
         <h2>RECEITUÁRIO</h2>
         <div class="line"></div>
-        <p style="text-align: left; font-size: 14px; margin-top: 20px;">PARA: <strong>${patientName}</strong></p>
+        <p style="text-align: left; font-size: 14px; margin-top: 20px;">PARA: <strong>${formData.patientName}</strong></p>
         ${medicinesHTML}
         ${dateHTML}
         ${footerHTML} <!-- A linha e "MÉDICO/CRM" são adicionados aqui -->
@@ -184,18 +215,110 @@ function generatePreview() {
             <p>1ª AVENIDA - S/Nº - SETOR UNIVERSITÁRIO <br> FONE (62) 3269-8200 - GOIÂNIA/GO</p>
         </div>
     `;
-
-    previewDiv.classList.add('visible');
-    previewActions.classList.remove('hidden');
+        previewDiv.classList.add('visible');
+    }
+    if (previewActions) {
+        previewActions.classList.remove('hidden');
+    }
 }
 
-
-
+// Modificação em editPrescription para restaurar medicamentos
 function editPrescription() {
-    document.getElementById('preview').classList.remove('visible');
-    document.getElementById('previewActions').classList.add('hidden');
-}
+    const previewElement = document.getElementById('preview');
+    const previewActionsElement = document.getElementById('previewActions');
 
+    if (previewElement) previewElement.classList.remove('visible');
+    if (previewActionsElement) previewActionsElement.classList.add('hidden');
+
+    // Restaurar dados principais do formulário
+    const patientNameInput = document.getElementById('patientName');
+    if (patientNameInput && formData.patientName !== undefined) patientNameInput.value = formData.patientName;
+    // Restaure outros campos principais aqui, se existirem, usando formData
+    // Ex: document.getElementById('patientAge').value = formData.patientAge || '';
+
+    // Restaurar a data
+    const dateDisplayElement = document.getElementById('dateDisplay');
+    const currentDateParagraph = document.getElementById('currentDate');
+    if (formData.dateDisplay) {
+        if (dateDisplayElement) dateDisplayElement.textContent = formData.dateDisplay;
+        if (currentDateParagraph) currentDateParagraph.style.display = 'block';
+    } else {
+        removeDate(); // Limpa a data se não houver nenhuma salva
+    }
+
+    // Restaurar medicamentos
+    const medicinesDiv = document.getElementById('medicines');
+    if (medicinesDiv) {
+        // Limpar medicamentos existentes no formulário (apenas os .medicine)
+        const existingMedicineElements = medicinesDiv.querySelectorAll('.medicine');
+        existingMedicineElements.forEach(el => el.remove());
+
+        let medicineCountForId = 0;
+        if (formData.medicines && formData.medicines.length > 0) {
+            formData.medicines.forEach(medData => {
+                medicineCountForId++;
+                const newMedicine = document.createElement('div');
+                newMedicine.className = 'medicine';
+                // Recriar a estrutura HTML do medicamento como em addMedicine
+                // Usar medicineCountForId para os IDs
+                newMedicine.innerHTML = `
+                    <div class="top-row">
+                        <div class="field">
+                            <label for="route${medicineCountForId}">Via:</label>
+                            <select id="route${medicineCountForId}" class="route"></select>
+                        </div>
+                        <div class="field">
+                            <label for="medicine${medicineCountForId}">Item:</label>
+                            <input type="text" id="medicine${medicineCountForId}" required>
+                        </div>
+                        <div class="field">
+                            <label for="posology${medicineCountForId}">Posologia:</label>
+                            <input type="text" id="posology${medicineCountForId}" required>
+                        </div>
+                        <div class="field">
+                            <label for="quantity${medicineCountForId}">Qnt:</label>
+                            <input type="text" id="quantity${medicineCountForId}" required>
+                        </div>
+                    </div>
+                    <div class="bottom-row">
+                        <div class="field full-width">
+                            <label for="usage${medicineCountForId}">Forma de Utilização:</label>
+                            <input type="text" id="usage${medicineCountForId}" required>
+                        </div>
+                        <button type="button" class="remove-medicine" onclick="removeMedicine(this)">&#10060;</button>
+                    </div>
+                `;
+                
+                // Preencher as opções do select de via e selecionar a correta
+                const routeSelect = newMedicine.querySelector('.route');
+                const routeOptions = ["Oral", "Epidural", "Endovenoso", "Inalatório", "Intra-arterial", "Intradérmico", "Intramuscular", "Intraperitoneal", "Intratecal", "Nasal", "Oftalmológico", "Otológico", "Retal", "Subcutâneo", "Sublingual", "Tópico", "Vaginal"];
+                routeOptions.forEach(optVal => {
+                    const option = document.createElement('option');
+                    option.value = optVal;
+                    option.textContent = optVal;
+                    if (optVal === medData.route) {
+                        option.selected = true;
+                    }
+                    routeSelect.appendChild(option);
+                });
+
+                // Preencher os outros campos
+                newMedicine.querySelector(`#medicine${medicineCountForId}`).value = medData.name;
+                newMedicine.querySelector(`#posology${medicineCountForId}`).value = medData.posology;
+                newMedicine.querySelector(`#quantity${medicineCountForId}`).value = medData.quantity;
+                newMedicine.querySelector(`#usage${medicineCountForId}`).value = medData.usage;
+
+                // Inserir o medicamento restaurado antes do campo de data
+                const dateFieldElement = medicinesDiv.querySelector('.date-field');
+                if (dateFieldElement) {
+                    medicinesDiv.insertBefore(newMedicine, dateFieldElement);
+                } else {
+                    medicinesDiv.appendChild(newMedicine); // Fallback
+                }
+            });
+        }
+    }
+}
 
 function printPrescription() {
     const previewDiv = document.getElementById('preview');
@@ -233,7 +356,29 @@ function printPrescription() {
 }
 
 // Função para restaurar event listeners caso necessário
+// Esta função será chamada após a impressão para reatribuir listeners e restaurar o estado.
 function restoreEventListeners() {
-    // Se você tinha eventos em botões ou formulários, precisa reanexá-los aqui
-    document.getElementById('meuBotao').addEventListener('click', minhaFuncao);
+    // Reanexar listeners aos botões principais do formulário
+    // Certifique-se de que os IDs abaixo correspondem aos IDs no seu HTML
+    const addMedicineBtn = document.getElementById('addMedicineBtn'); // Assumindo que o botão "Adicionar Medicamento" tem este ID
+    if (addMedicineBtn) addMedicineBtn.addEventListener('click', addMedicine);
+
+    const addDateBtn = document.getElementById('addDateBtn'); // Assumindo que o botão "Adicionar Data Atual" tem este ID
+    if (addDateBtn) addDateBtn.addEventListener('click', addCurrentDate);
+
+    const generatePreviewBtn = document.getElementById('generatePreviewBtn'); // Assumindo que o botão "Gerar Pré-visualização" tem este ID
+    if (generatePreviewBtn) generatePreviewBtn.addEventListener('click', generatePreview);
+
+    // Reanexar listeners aos botões de ação da pré-visualização
+    const editBtn = document.getElementById('editBtn'); // Assumindo que o botão "Editar" na pré-visualização tem este ID
+    if (editBtn) editBtn.addEventListener('click', editPrescription);
+
+    const printBtn = document.getElementById('printBtn'); // Assumindo que o botão "Imprimir" na pré-visualização tem este ID
+    if (printBtn) printBtn.addEventListener('click', printPrescription);
+
+    // Repopular o formulário e garantir que ele esteja no estado de edição
+    // A função editPrescription já lida com o preenchimento dos campos
+    // e com a exibição correta do formulário vs pré-visualização.
+    // Ela também recria os medicamentos com seus botões de remover.
+    editPrescription();
 }
