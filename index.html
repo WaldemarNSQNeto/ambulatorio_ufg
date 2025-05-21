@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>RECEITUÁRIO SIMPLES</h1>
+        <h1>RECEITUÁRIO</h1>
         <form id="prescriptionForm">
             <label for="patientName">Nome do Paciente:</label>
             <input type="text" id="patientName" required>
@@ -17,7 +17,7 @@
     <div class="medicine">
         <div class="top-row">
             <div class="field">
-                <label for="route1">Via de Administração:</label>
+                <label for="route1">Via:</label>
                 <select id="route1" class="route">
                     <option value="Oral" selected>Oral</option>
                     <option value="Epidural">Epidural</option>
@@ -40,7 +40,7 @@
             </div>
 
             <div class="field">
-                <label for="medicine1">Fármaco:</label>
+                <label for="medicine1">Item:</label>
                 <input type="text" id="medicine1" required>
             </div>
 
@@ -94,7 +94,7 @@
         </div>
 
         <div id="previewActions" class="hidden">
-            <button onclick="editPrescription()">Editar</button>
+            <button hidden="editPrescription()">Editar</button>
             <button onclick="printPrescription()">Imprimir</button>
         </div>
   
