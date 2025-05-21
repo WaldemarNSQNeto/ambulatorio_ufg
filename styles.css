@@ -3,44 +3,93 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    color: #333;
 }
 
-
-.logo {
-    display: block;
-    margin: 0 auto;
-    width: 130px;
-    height: auto;
-    text-align: center;
-}
 
 .container {
-    width: 80%;
-    margin: 20px auto;
-    background-color: #fff;
+    max-width: 900px;
+    margin: 30px auto;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 h1 {
-    text-align: center;
-    font-size: 26px; /* Aumentei um pouco o tamanho para mais destaque */
-    font-weight: bold; /* Dá mais presença ao título */
-    color: #333; /* Tom mais suave do preto para não ficar tão pesado */
-    text-transform: uppercase; /* Deixa todas as letras maiúsculas para mais impacto */
-    letter-spacing: 1.5px; /* Dá mais espaçamento entre as letras */
-    margin-bottom: 15px; /* Adiciona um espaço abaixo do título */
-    padding: 5px 0; /* Ajuste interno para melhor distribuição */
-    font-family: 'Poppins', sans-serif; /* Fonte moderna e sofisticada */
-  /* Degradê azul moderno */
-    background: linear-gradient(45deg, #007bff, #0056b3, #00aaff); 
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent; /* Faz o texto herdar o degradê */
-
-    /* Sombra preta para destacar */
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+    font-size: 2em;
 }
+
+h2 {
+    font-size: 1.5em;
+}
+
+
+/* === FORMULÁRIO === */
+#prescriptionForm {
+    margin-bottom: 30px;
+}
+
+#prescriptionForm label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+#prescriptionForm input[type="text"],
+#prescriptionForm select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Para padding não afetar a largura total */
+    font-size: 0.9em;
+}
+
+#prescriptionForm button,
+#previewActions button {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-right: 10px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+#prescriptionForm button:hover,
+#previewActions button:hover {
+    background-color: #0056b3;
+}
+
+#prescriptionForm button.remove-medicine {
+    background-color: #dc3545; /* Vermelho para remoção */
+    padding: 5px 10px;
+    font-size: 0.8em;
+    margin-left: 10px;
+    vertical-align: middle; /* Alinha melhor com os inputs */
+}
+
+#prescriptionForm button.remove-medicine:hover {
+    background-color: #c82333;
+}
+
+
+
+
+
 
 
 form {
@@ -102,7 +151,7 @@ button:hover {
 
 .top-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Ajusta para melhor adaptabilidade */
+    grid-template-columns: repeat(4, minmax(0, 1fr)); /* Força 4 colunas que dividem o espaço */
     gap: 15px;
 }
 
@@ -275,7 +324,7 @@ button:hover {
 @media print {
     @page {
         size: A4 landscape; /* A4 horizontal */
-        margin: 10mm; /* Pequena margem */
+        margin: 5mm 10mm 10mm 10mm; /* Margem: Superior Direita Inferior Esquerda */
     }
 
     .print-container {
@@ -306,3 +355,14 @@ button:hover {
     }
 }
 
+
+
+.logo {
+    display: block; /* Faz a imagem se comportar como um bloco, permitindo margens automáticas */
+    margin-left: auto; /* Centraliza a imagem horizontalmente */
+    margin-right: auto; /* Centraliza a imagem horizontalmente */
+    margin-bottom: 20px; /* Adiciona um espaço abaixo da logo, antes do título "RECEITUÁRIO" */
+    width: 280px; /* Defina a largura desejada aqui, ex: 200px */
+    height: auto; /* Mantém a proporção da imagem ao redimensionar a largura */
+    clip-path: inset(10px); /* Corta 10px de cada lado da imagem */
+}
