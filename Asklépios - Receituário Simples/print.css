@@ -1,0 +1,179 @@
+/* Regras que SÓ aplicam ao imprimir */
+@media print {
+
+    /* Define o tamanho da página */
+    @page {
+        size: A4;
+        margin: 2cm; /* Margem padrão de um documento A4 */
+    }
+
+    /* Esconde o formulário e mostra a saída */
+    html, body {
+        height: 100%; /* Garante que o HTML e o Body ocupem 100% da altura da página */
+        margin: 0;
+        padding: 0;
+        background: #fff; /* Fundo branco para impressão */
+    }
+    
+    /* 
+     * Esconde a interface do formulário.
+     * O seletor 'body > header' garante que apenas o cabeçalho principal seja oculto,
+     * e não o cabeçalho dentro de #print-output.
+    */
+    body > header, #app-container {
+        display: none !important;
+    }
+
+    .print-table {
+        height: 100%; /* A tabela deve ocupar 100% da altura do body */
+        width: 100%;
+        border-collapse: collapse; /* Remove espaços entre as células */
+        table-layout: fixed; /* Garante que a tabela ocupe a largura total */
+    }
+
+    /* Cabeçalho */
+    thead.print-header {
+        text-align: center; /* Centraliza o conteúdo (logo, h1) */
+        /* ESSA REGRA FAZ O CABEÇALHO REPETIR */
+        display: table-header-group;
+    }
+    .header-content { padding-bottom: 20px; }
+
+    thead .logo {
+        display: block; /* Trata a imagem como um bloco */
+        margin-left: auto; /* Margem automática à esquerda */
+        margin-right: auto; /* Margem automática à direita */
+        max-width: 100%; /* Garante que a imagem não ultrapasse o contêiner */
+        height: 60px; /* Define uma altura fixa para a logo */
+        margin-bottom: 55px; }
+    thead h1 {
+        font-weight: bold;
+        color: #000;
+        font-size: 16pt; /* Tamanho da fonte do título */
+        margin: 0 0 15px 0; /* Aumenta o espaçamento abaixo do título para a linha */
+    }
+
+    .header-line {
+        width: 100%;
+        border: 0;
+        border-top: 2px solid #000;
+        margin: 0;
+    }
+
+    .header-details {
+        display: flex;
+        justify-content: flex-start; /* Alinha o "PARA:" à esquerda */
+        margin-top: 15px;
+        font-size: 1.1em;
+    }
+
+    /* Corpo (Medicamentos) */
+    tbody.print-body td {
+        vertical-align: top; /* Alinha o conteúdo ao topo da célula */
+        display: flex; /* Transforma a célula em um container flex */
+        flex-direction: column; /* Organiza os itens em coluna */
+    }
+    /* Este é o container que vai empurrar o rodapé para baixo */
+    .body-wrapper {
+        flex-grow: 1; /* Faz este elemento crescer e ocupar todo o espaço restante */
+        padding-top: 20px; /* Espaço entre o cabeçalho e o início dos medicamentos */
+    }
+    
+    #print-med-list {
+        padding-left: 0;
+    }
+
+    .print-via-title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.1em;
+        text-transform: uppercase; /* Transforma o texto para maiúsculas */
+        margin: 15px 0 10px 0; /* Margem correta */
+    }
+
+    #print-med-list li {
+        list-style-type: none; /* Remove qualquer marcador padrão */
+        position: relative;
+        padding-left: 25px; /* Espaço para o número */
+        margin-bottom: 10px;
+        font-size: 1.1em;
+    }
+
+    /* Cria o número usando o contador do JS */
+    #print-med-list li::before {
+        content: attr(data-counter) "."; /* Pega o valor do atributo 'data-counter' e adiciona um ponto */
+        position: absolute;
+        left: 0;
+        font-weight: bold;
+    }
+
+    .med-line {
+        display: flex; /* Ativa o Flexbox */
+        align-items: flex-end; /* Alinha a base dos textos */
+    }
+
+    .med-main {
+        /* Ocupa o espaço necessário para o texto */
+        flex-shrink: 0;
+    }
+
+    .med-filler {
+        flex-grow: 1; /* Faz este elemento crescer e ocupar todo o espaço disponível */
+        border-bottom: 1px dashed #333; /* Cria a linha pontilhada */
+        margin: 0 5px 11px 5px; /* Espaçamento e ajuste vertical corretos */
+    }
+
+    .med-quantity {
+        /* Ocupa o espaço necessário para o texto */
+        flex-shrink: 0;
+    }
+
+    .usage-details {
+        font-style: italic;
+        padding-left: 5px; /* Pequeno recuo para alinhar com o texto do item */
+        margin-top: 3px;
+        color: #333;
+    }
+
+    /* Rodapé (Fixo no fim da página) */
+    tfoot.print-footer {
+        text-align: center;
+        font-size: 0.9em;
+        /* ESSA REGRA FAZ O RODAPÉ REPETIR EM MÚLTIPLAS PÁGINAS */
+        display: table-footer-group;
+    }
+    .footer-content {
+        padding-top: 50px; /* Espaço entre o fim dos remédios e a assinatura */
+    }
+    .date-info {
+        text-align: right;
+        margin-bottom: 50px; /* Espaço entre a data e a assinatura */
+        font-size: 1.1em;
+    }
+
+    .signature-line {
+        margin-bottom: 25px;
+        /* Centraliza a linha de 1/3 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .line-1-3 {
+        width: 33.3%;
+        border: 0;
+        border-top: 1px solid #000;
+        margin: 0 0 5px 0; /* Adiciona 5px de margem inferior */
+    }
+    
+    .line-full {
+        width: 100%;
+        border: 0;
+        border-top: 1px solid #000;
+        margin-bottom: 5px;
+    }
+
+    .address {
+        font-size: 0.8em;
+    }
+}
