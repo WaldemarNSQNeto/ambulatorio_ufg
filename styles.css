@@ -1,0 +1,306 @@
+/* Importando uma fonte do Google Fonts para um visual mais moderno */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+/* Reset básico e configurações globais */
+:root {
+    --background-color: #f4f7f6; /* Fundo claro, como no receituário */
+    --card-color: #ffffff;       /* Cartões brancos */
+    --text-color: #333333;       /* Texto escuro para contraste */
+    --primary-color: #1b79c5;    /* Cor de destaque azul */
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', 'Arial', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    padding: 0 1rem; /* Remove o padding vertical do body */
+    position: relative; /* Necessário para o pseudo-elemento ::before */
+    opacity: 0; /* Começa invisível para animação de entrada */
+    animation: fadeInPage 0.5s ease-in-out forwards;
+}
+
+/* Container para os ícones animados do fundo */
+#animated-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2; /* Coloca atrás da grade e do conteúdo */
+    overflow: hidden; /* Garante que os ícones não vazem */
+}
+
+.bg-icon {
+    position: absolute;
+    color: rgba(27, 121, 197, 0.1); /* Azul bem transparente */
+    opacity: 0; /* Garante que o ícone comece sempre invisível */
+    animation: rise 25s linear infinite;
+}
+
+/* Estilo específico para a logo animada, para aplicar o efeito de cor */
+img.bg-icon {
+    filter: grayscale(1) brightness(1.5) sepia(1) hue-rotate(180deg) opacity(10%);
+}
+
+/* Adicionando a textura de grade do receituário */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(rgba(2, 0, 20, 0.15) 2px, transparent 1px),
+        linear-gradient(90deg, rgba(2, 30, 39, 0.15) 2px, transparent 1px);
+    background-size: 15px 15px; /* Aumenta o tamanho para a animação ser mais suave */
+    opacity: 0.12;
+    z-index: -1;
+    animation: backgroundPan 60s linear infinite; /* Animação de fundo sutil */
+}
+
+/* Estilos para o título principal (cabeçalho) */
+.main-title-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 10px;
+    margin-bottom: 2.5rem; /* Aumenta o espaço após o cabeçalho */
+    text-align: center;
+    width: 100vw; /* Faz o container ocupar toda a largura da tela */
+}
+.header-icon {
+    height: 60px;
+    margin-top: 20px;
+    margin-top: 2rem; /* Joga a logo mais para cima */
+    margin-bottom: 10px;
+    transition: transform 0.3s ease; /* Transição para o hover */
+}
+.header-divider {
+    width: 100%;
+    border: 0;
+    border-top: 1px solid #0c0c0c;
+}
+.main-title-container h1 {
+    font-size: 2.5rem;
+    font-weight: 900; /* Mais peso para o título */
+    margin: 1.5rem 0; /* Aumenta o espaçamento acima e abaixo do título */
+    /* Estilo de Gradiente Animado para o Título */
+    background: linear-gradient(90deg, #007bff, #1b79c5, #2a9d8f, #007bff);
+    background-size: 200% 200%;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: gradientAnimation 5s ease infinite;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-icon:hover {
+    transform: scale(1.1); /* Efeito de crescimento no hover */
+}
+
+/* Estilo da Barra de Busca */
+.search-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 2.5rem;
+    margin-bottom: 2.5rem; /* Mantém o espaço antes dos cards */
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+#search-input {
+    width: 100%;
+    padding: 0.8rem 2.5rem; /* Espaço para ícone de busca e botão de limpar */
+    border-radius: 8px;
+    border: 1px solid var(--card-color);
+    background-color: var(--card-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    color: #999;
+    cursor: pointer;
+    /* Para a animação de fade e scale */
+    opacity: 0;
+    transform: translateY(-50%) scale(0.8);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.clear-search-btn:hover {
+    color: #333;
+}
+.clear-search-btn.visible {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+    pointer-events: all;
+}
+
+#search-input:focus {
+    box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+/* Container principal */
+.container {
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* Grade de cartões */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Estilo individual do cartão */
+.card {
+    background-color: var(--card-color);
+    border-radius: 10px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px var(--shadow-color);
+    /* Para a animação de entrada */
+    opacity: 0;
+    transform: translateY(20px);
+    animation: cardFadeIn 0.5s ease-out forwards;
+}
+
+.card:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 8px 25px var(--shadow-color), 0 0 15px rgba(27, 121, 197, 0.3); /* Adiciona um brilho azul */
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    transition: color 0.3s ease;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.card:hover .card-icon {
+    color: #2a9d8f; /* Muda a cor do ícone para um verde-azulado no hover */
+}
+
+
+/* Responsividade para telas menores (celulares) */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .main-title-container {
+        margin-bottom: 2rem;
+    }
+
+    .main-title-container h1 {
+        font-size: 2rem;
+    }
+
+    .card-grid {
+        gap: 1rem;
+    }
+}
+
+/* Estilos para o rodapé da página principal */
+.site-footer {
+    color: #6c757d;
+    text-align: center;
+    width: 100%;
+    margin-top: auto;
+    padding: 20px;
+    padding: 2rem 0; /* Adiciona padding vertical para não colar no conteúdo */
+    font-size: 0.8em;
+    line-height: 1.2;
+}
+
+.footer-divider {
+    width: 100%;
+    border: 0;
+    border-top: 1px solid #6c757d;
+    margin-bottom: 10px;
+}
+
+/* Keyframes para as Animações */
+@keyframes fadeInPage {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes cardFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes backgroundPan {
+    from { background-position: 0 0; }
+    to { background-position: -30px -30px; }
+}
+
+@keyframes rise {
+    from {
+        /* Estado inicial: no fundo da tela e invisível */
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        /* Após 10% da animação, o ícone atinge sua opacidade máxima (efeito de fade-in) */
+        opacity: 0.9;
+    }
+    to {
+        /* No final, sobe para fora da tela e desaparece completamente */
+        transform: translateY(-10vh) rotate(360deg);
+        opacity: 0;
+    }
+}

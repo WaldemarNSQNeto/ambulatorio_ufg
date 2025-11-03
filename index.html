@@ -3,40 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Receituário Simples - Asklépios Soluções Médicas</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="print.css" media="print">
+    <title>Central de Documentos Médicos</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Adicionando a biblioteca de ícones Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
+    <div id="animated-background"></div>
+
     <header>
         <div class="main-title-container">
-            <img src="The-Rod-of-Asclepius2-V2.png" alt="Cajado de Asclépio" class="header-icon">
-            <hr class="header-divider">            
-            <h1>Gerador de Receituário Simples</h1>
-            <hr class="header-divider">            
+            <img src="Asklépios - Receituário Simples/The-Rod-of-Asclepius2-V2.png" alt="Cajado de Asclépio" class="header-icon">
+            <hr class="header-divider">
+            <h1>Central de Documentos</h1>
+            <hr class="header-divider">
         </div>
     </header>
 
-    <main id="app-container">
-        <section class="form-section">
-            <div class="form-group">
-                <label for="patient-name">Nome do Paciente:</label>
-                <input type="text" id="patient-name" placeholder="Nome completo">
-            </div>
-        </section>
+    <div class="search-container">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="search-input" placeholder="Buscar documento...">
+        <button id="clear-search-btn" class="clear-search-btn" title="Limpar busca"><i class="fa-solid fa-xmark"></i></button>
+    </div>
 
-        <section class="form-section">
-            <div id="medication-list">
-                </div>
-            <button id="add-item-btn" class="btn-primary">+ Adicionar Novo Item</button>
-            <button id="add-date-btn" class="btn-secondary">Datar?</button>            
-        </section>
+    <main class="container">
+        <div class="card-grid">
+            <!-- Documentos Existentes -->
+            <a href="Asklépios - Receituário Simples/index.html" class="card" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-file-prescription card-icon"></i>
+                <span class="card-title">Receituário Simples</span>
+            </a>
+            <a href="Asklépios - Receituário Especial/index.html" class="card" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-file-medical card-icon"></i>
+                <span class="card-title">Receituário Controle Especial</span>
+            </a>
+            <a href="https://pedidoss-exames.vercel.app/" class="card" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-flask-vial card-icon"></i>
+                <span class="card-title">Pedido de Exames</span>
+            </a>
 
-        <section class="form-actions">
-            <button type="button" id="generate-doc-btn" class="btn-success">Gerar e Imprimir Receituário </button>
-            <button type="button" id="reset-btn" class="btn-warning">Limpar e Gerar Nova Receita</button>
-        </section>
+            <!-- Documentos Futuros (modelos) -->
+            <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-file-waveform card-icon"></i>
+                <span class="card-title">Atestado Médico</span>
+            </a>
+            <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-clock card-icon"></i>
+                <span class="card-title">Atestado de Comparecimento</span>
+            </a>
+            <a href="#" class="card" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-people-arrows card-icon"></i>
+                <span class="card-title">Interconsulta</span>
+            </a>
+            <!-- Adicione mais cartões aqui conforme necessário -->
+
+        </div>
     </main>
 
     <footer class="site-footer">
@@ -44,94 +66,9 @@
         <p>
             ⚕️ Asklépios Soluções Médicas ⚕️<br>
             Startup by Waldemar Neto - Interno Turma LXIX<br>
-            V. Alfa 1.1. (29/07/2025)
+            V. Alfa 1.0. (01/07/2025)
         </p>
     </footer>
-
-    <template id="medication-template">
-        <div class="medication-item">
-            <button class="remove-item-btn" title="Excluir item">X</button>
-            <div class="grid-row">
-                <div class="form-group">
-                    <label>Via:</label>
-                    <select class="med-via">
-                        <option value="Oral" selected>Oral</option>
-                        <option value="Endovenoso">Endovenoso</option>
-                        <option value="Epidural">Epidural</option>
-                        <option value="Inalatório">Inalatório</option>
-                        <option value="Intra-arterial">Intra-arterial</option>
-                        <option value="Intradérmico">Intradérmico</option>
-                        <option value="Intramuscular">Intramuscular</option>
-                        <option value="Intraperitoneal">Intraperitoneal</option>
-                        <option value="Intratecal">Intratecal</option>
-                        <option value="Nasal">Nasal</option>
-                        <option value="Oftalmológico">Oftalmológico</option>
-                        <option value="Otológico">Otológico</option>
-                        <option value="Retal">Retal</option>
-                        <option value="Subcutâneo">Subcutâneo</option>
-                        <option value="Sublingual">Sublingual</option>
-                        <option value="Tópico">Tópico</option>
-                        <option value="Vaginal">Vaginal</option>
-                    </select>
-                </div>                <div class="form-group med-item-name">
-                    <label>Item:</label>
-                    <input type="text" class="med-item" name="med-item" placeholder="Ex: Dipirona">
-                </div>                
-                <div class="form-group">
-                    <label>Posologia:</label>
-                    <input type="text" class="med-posology" name="med-posology" placeholder="Ex: 500 mg">
-                </div>
-                <div class="form-group">
-                    <label>Qnt:</label>
-                    <input type="text" class="med-quantity" placeholder="Ex: 01 caixa">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Forma de Utilização:</label>
-                <input type="text" class="med-usage" name="med-usage" placeholder="Ex: Tomar 01 cp de até 8/8h se dor e/ou febre">
-            </div>
-        </div>
-    </template>
-
-    <div id="print-output">
-        <table class="print-table">
-            <thead class="print-header">
-                <tr>
-                    <td>
-                        <div class="header-content">
-                            <img src="logoo.png" alt="Logo" class="logo">
-                            <h1>RECEITUÁRIO</h1>
-                            <hr class="header-line">
-                            <div class="header-details">
-                                <div class="patient-info"><strong>PARA:</strong> <span id="print-patient-name"></span></div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </thead>
-            <tbody class="print-body">
-                <tr>
-                    <td>
-                        <div class="body-wrapper">
-                            <div id="print-med-list"></div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-            <tfoot class="print-footer">
-                <tr>
-                    <td>
-                        <div class="footer-content">
-                            <div class="date-info"><span id="print-date"></span></div>
-                            <div class="signature-line"><hr class="line-1-3"><span>MÉDICO / CRM</span></div>
-                            <hr class="line-full">
-                            <div class="address">1ª AVENIDA - S/Nº - SETOR UNIVERSITÁRIO<br>FONE (62) 3269-8200 - GOIÂNIA/GO</div>
-                        </div>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
 
     <script src="script.js"></script>
 </body>

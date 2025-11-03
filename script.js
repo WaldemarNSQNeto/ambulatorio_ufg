@@ -1,186 +1,88 @@
+// Aguarda o conteúdo da página carregar completamente
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // Seletores dos elementos principais
-    const medList = document.getElementById('medication-list');
-    const template = document.getElementById('medication-template');
-    const addItemBtn = document.getElementById('add-item-btn');
-    const addDateBtn = document.getElementById('add-date-btn');
-    const generateBtn = document.getElementById('generate-doc-btn');
-    const resetBtn = document.getElementById('reset-btn');
 
-    // Variável para controlar o estado do botão "Datar" (ON/OFF)
-    let isDateEnabled = false;
+    // Seleciona o campo de busca e todos os cartões de documentos
+    const searchInput = document.getElementById('search-input');
+    const cards = document.querySelectorAll('.card');
+    const clearSearchBtn = document.getElementById('clear-search-btn');
 
-    // Função para adicionar um novo item
-    function addNewItem() {
-        const clone = template.content.cloneNode(true);
-        const medItem = clone.querySelector('.medication-item');
-        
-        // Adiciona o evento de remoção ao botão 'X' do novo item
-        const removeBtn = medItem.querySelector('.remove-item-btn');
-        removeBtn.addEventListener('click', () => {
-            medItem.remove();
-        });
-        
-        medList.appendChild(medItem);
-    }
-
-    // Função para datar o documento
-    function setDate() {
-        const today = new Date();
-        // Formata a data (ex: Goiânia, 28 de Outubro de 2025)
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        const formattedDate = today.toLocaleDateString('pt-BR', options);
-        
-        // Adiciona a data no campo de impressão (escondido)
-        const dateField = document.getElementById('print-date');
-        // Você pode ajustar o local (Goiânia) conforme necessário
-        const fullDateText = `Goiânia/GO, ${formattedDate}`;
-        dateField.textContent = fullDateText.toUpperCase();
-    }
-
-    // Função principal: Gerar o documento
-    function generateDocument() {
-        // 1. Coletar dados do paciente e data
-        const patientName = document.getElementById('patient-name').value;
-        document.getElementById('print-patient-name').textContent = patientName;
-
-        // Verifica se o botão "Datar" está ativo.
-        // Se estiver, chama a função setDate(). Se não, limpa o campo da data.
-        if (isDateEnabled) {
-            setDate();
-        } else {
-            const dateField = document.getElementById('print-date');
-            if (dateField) {
-                dateField.textContent = '';
-            }
-        }
-        
-        // 2. Coletar dados dos medicamentos
-        const items = [];
-        const medItems = medList.querySelectorAll('.medication-item');
-        
-        medItems.forEach(item => {
-            items.push({
-                via: item.querySelector('.med-via').value,
-                item: item.querySelector('.med-item').value,
-                posologia: item.querySelector('.med-posology').value,
-                qnt: item.querySelector('.med-quantity').value,
-                uso: item.querySelector('.med-usage').value
-            });
-        });
-
-        // 3. Agrupar medicamentos por 'via'
-        // Usamos um Map para agrupar, o que preserva a ordem de inserção
-        const grouped = new Map();
-        items.forEach(item => {
-            if (!grouped.has(item.via)) {
-                grouped.set(item.via, []);
-            }
-            grouped.get(item.via).push(item);
-        });
-
-        // 4. Construir o HTML para a lista de impressão
-        const printList = document.getElementById('print-med-list');
-        printList.innerHTML = ''; // Limpa a lista anterior
-
-        // Usamos um contador manual para garantir a numeração contínua
-        let medCounter = 1;
-
-        grouped.forEach((meds, via) => {
-            // Adiciona o título da via
-            const viaTitle = document.createElement('div');
-            viaTitle.className = 'print-via-title';
-            viaTitle.textContent = `USO ${via}`; // Ex: "Uso Oral"
-            printList.appendChild(viaTitle);
-
-            // Adiciona os medicamentos desse grupo
-            meds.forEach(med => {
-                const medLi = document.createElement('li');
-                // Adiciona o número manualmente usando um pseudo-elemento ::before que será estilizado no CSS
-                medLi.setAttribute('data-counter', medCounter++);
-                
-                // Monta a parte principal do medicamento, tratando a posologia opcional
-                const medMainText = [`<strong>${med.item || 'N/A'}</strong>`, `<strong>${med.posologia}</strong>`].filter(Boolean).join(' ');
-
-                // Nova estrutura para alinhamento com preenchimento
-                const medContent = document.createElement('div');
-                medContent.className = 'med-line';
-                medContent.innerHTML = `<span class="med-main">${medMainText}</span><span class="med-filler"></span><span class="med-quantity">${med.qnt || 'N/A'}</span>`;
-                medLi.appendChild(medContent);
-                
-                // Adiciona a forma de utilização (se houver)
-                if (med.uso) {
-                    const usageDiv = document.createElement('div');
-                    usageDiv.className = 'usage-details';
-                    usageDiv.textContent = `${med.uso}`;
-                    medLi.appendChild(usageDiv);
-                }
-                
-                printList.appendChild(medLi);
-            });
-        });
-        
-        // 5. Abrir uma nova janela para impressão para não perder os dados do formulário
-        // Garante que #print-output esteja visível no DOM principal para que seu innerHTML seja capturado corretamente.
-        // O style.css o esconde por padrão.
-        const printOutputElement = document.getElementById('print-output');
-        printOutputElement.style.display = 'block';
-
-        const printWindow = window.open('', '_blank');
-        
-
-        if (!printWindow) {
-            printOutputElement.style.display = 'none'; // Esconde de volta se a janela falhar
-            alert('A impressão foi bloqueada pelo navegador. Por favor, habilite os pop-ups para este site.');
-            return;
-        }
-
-        // 6. Montar o HTML completo para a nova janela
-        const printContent = printOutputElement.innerHTML;
-        printOutputElement.style.display = 'none'; // Esconde de volta após capturar o conteúdo
-
-        const printCSS = document.querySelector('link[href="print.css"]').outerHTML;
-
-        printWindow.document.write(`
-            <!DOCTYPE html>
-            <html lang="pt-br">
-            <head>
-                <meta charset="UTF-8">
-                <title>Receituário para Impressão</title>
-                ${printCSS}
-            </head>
-            <body>
-                ${printContent}
-            </body>
-            </html>
-        `);
-
-        printWindow.document.close();
-
-        // 7. Acionar a impressão após o conteúdo carregar
-        printWindow.addEventListener('load', () => {
-            printWindow.print();
-            printWindow.close();
-        });
-    }
-
-    // Função para alternar o estado da data (ON/OFF)
-    function toggleDate() {
-        isDateEnabled = !isDateEnabled; // Inverte o estado (true -> false, false -> true)
-        addDateBtn.classList.toggle('active'); // Adiciona/remove a classe 'active' para feedback visual
-    }
-
-    // Adiciona os ouvintes de eventos
-    addItemBtn.addEventListener('click', addNewItem);
-    addDateBtn.addEventListener('click', toggleDate); // O botão agora chama a função de alternância
-    generateBtn.addEventListener('click', generateDocument);
-
-    // Adiciona o evento de clique ao novo botão de reset
-    resetBtn.addEventListener('click', () => {
-        location.reload(); // Recarrega a página, limpando todos os campos
+    // Animação de entrada escalonada para os cartões
+    cards.forEach((card, index) => {
+        // Adiciona um atraso na animação de cada cartão
+        card.style.animationDelay = `${index * 0.1}s`;
     });
 
-    // Adiciona um item inicial ao carregar a página
-    addNewItem();
+    // Adiciona um "ouvinte" que reage a cada tecla digitada no campo de busca
+    searchInput.addEventListener('keyup', (event) => {
+        // Pega o texto digitado e converte para minúsculas para facilitar a comparação
+        const searchTerm = event.target.value.toLowerCase();
+
+        // Mostra ou esconde o botão de limpar
+        if (searchTerm.length > 0) {
+            clearSearchBtn.classList.add('visible');
+        } else {
+            clearSearchBtn.classList.remove('visible');
+        }
+
+        // Passa por cada cartão para decidir se ele deve ser mostrado ou escondido
+        cards.forEach(card => {
+            // Pega o título do cartão e também converte para minúsculas
+            const cardTitle = card.querySelector('.card-title').textContent.toLowerCase();
+
+            // Verifica se o título do cartão inclui o texto da busca
+            if (cardTitle.includes(searchTerm)) {
+                card.style.display = 'flex'; // Se incluir, mostra o cartão
+            } else {
+                card.style.display = 'none'; // Se não incluir, esconde o cartão
+            }
+        });
+    });
+
+    // Adiciona um "ouvinte" para o clique no botão de limpar
+    clearSearchBtn.addEventListener('click', () => {
+        // Limpa o valor do campo de busca
+        searchInput.value = '';
+        // Esconde o botão de limpar
+        clearSearchBtn.classList.remove('visible');
+        // Mostra todos os cartões novamente
+        cards.forEach(card => {
+            card.style.display = 'flex';
+        });
+        // Coloca o foco de volta no campo de busca
+        searchInput.focus();
+    });
+
+    // --- NOVO: Lógica para criar ícones de fundo animados ---
+    const background = document.getElementById('animated-background');
+    // Adicionamos 'logo' como uma das opções a serem sorteadas
+    //const icons = ['logo'];
+    const icons = ['fa-stethoscope', 'fa-heart-pulse', 'fa-pills', 'fa-syringe', 'fa-dna', 'fa-microscope', 'fa-notes-medical', 'fa-band-aid', 'fa-x-ray', 'fa-tablets', 'fa-brain', 'fa-virus'];
+    const numberOfIcons = 31; // Quantidade de ícones na tela
+
+    for (let i = 0; i < numberOfIcons; i++) {
+        const randomChoice = icons[Math.floor(Math.random() * icons.length)];
+        let element;
+
+        if (randomChoice === 'logo') {
+            element = document.createElement('img');
+            element.src = 'Asklépios - Receituário Simples/The-Rod-of-Asclepius2-V2.png';
+            element.className = 'bg-icon'; // Usa a mesma classe de animação
+        } else {
+            element = document.createElement('i');
+            element.className = `fa-solid ${randomChoice} bg-icon`;
+            element.style.fontSize = `${Math.random() * 30 + 15}px`; // Tamanho entre 15px e 45px
+        }
+        
+        // Propriedades comuns para todos os elementos
+        element.style.left = `${Math.random() * 100}vw`;
+        
+        // Duração e atraso da animação aleatórios para um efeito mais natural
+        const animationDuration = Math.random() * 20 + 15; // Duração entre 15s e 35s
+        const animationDelay = Math.random() * 15; // Atraso de até 15s
+
+        element.style.animation = `rise ${animationDuration}s linear ${animationDelay}s infinite`;
+
+        background.appendChild(element);
+    }
+
 });

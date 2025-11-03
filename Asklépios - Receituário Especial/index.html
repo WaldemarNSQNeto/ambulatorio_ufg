@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receituário de Controle Especial - Asklépios Soluções Médicas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="print.css" media="print">
+</head>
+<body>
+
+    <header>
+        <div class="main-title-container">
+            <img src="The-Rod-of-Asclepius2-V2.png" alt="Cajado de Asclépio" class="header-icon">
+            <hr class="header-divider">            
+            <h1>Gerador de Receituário de <span class="highlight-special">Controle Especial</span></h1>
+            <hr class="header-divider">            
+        </div>
+    </header>
+
+    <main id="app-container">
+        <section class="form-section">
+            <div class="form-group">
+                <label for="patient-name">Nome do Paciente:</label>
+                <input type="text" id="patient-name" placeholder="Nome completo do paciente" maxlength="49">
+            </div>
+            <div class="form-group">
+                <label for="patient-address">Endereço do Paciente:</label>
+                <input type="text" id="patient-address" placeholder="Endereço completo do paciente (opcional)">
+            </div>
+        </section>
+
+        <section class="form-section hidden">
+            <label>2. Comprador (se diferente do paciente):</label>
+            <div class="grid-row-comprador">
+                <div class="form-group">
+                    <input type="text" id="comprador-nome" placeholder="Nome do comprador" maxlength="50">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="comprador-rg" placeholder="Nº RG">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="comprador-orgao" placeholder="Órgão Emissor">
+                </div>
+            </div>
+
+        </section>
+
+        <section class="form-section">
+            <div id="medication-list">
+                </div>
+            <button id="add-item-btn" class="btn-primary">+ Adicionar Novo Item</button>                        
+            <button id="add-date-btn" class="btn-secondary">Datar?</button>            
+            <div id="date-options-container" class="hidden">
+                <button id="date-today-btn" class="btn-date-option">Hoje</button>
+                <div id="date-custom-area">
+                    <button id="date-other-btn" class="btn-date-option">Outra data</button>
+                    <input type="text" id="custom-date-input" class="hidden" placeholder="dd/mm/aaaa" maxlength="10">
+                </div>
+            </div>
+        </section>
+
+        <section class="form-actions">
+            <button type="button" id="generate-doc-btn" class="btn-success">Gerar e Imprimir Receituário </button>
+            <button type="button" id="reset-btn" class="btn-warning">Limpar e Gerar Nova Receita</button>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <hr class="footer-divider">
+        <p>
+            ⚕️ Asklépios Soluções Médicas ⚕️<br>
+            Startup by Waldemar Neto - Interno Turma LXIX<br>
+            V. Alfa 1.2. (02/11/2025)
+        </p>
+    </footer>
+
+    <template id="medication-template">
+        <div class="medication-item">
+            <button class="remove-item-btn" title="Excluir item">X</button>
+            <div class="grid-row">
+                <div class="form-group">
+                    <label>Via:</label>
+                    <select class="med-via">
+                        <option value="Oral" selected>Oral</option>
+                        <option value="Endovenoso">Endovenoso</option>
+                        <option value="Epidural">Epidural</option>
+                        <option value="Inalatório">Inalatório</option>
+                        <option value="Intra-arterial">Intra-arterial</option>
+                        <option value="Intradérmico">Intradérmico</option>
+                        <option value="Intramuscular">Intramuscular</option>
+                        <option value="Intraperitoneal">Intraperitoneal</option>
+                        <option value="Intratecal">Intratecal</option>
+                        <option value="Nasal">Nasal</option>
+                        <option value="Oftalmológico">Oftalmológico</option>
+                        <option value="Otológico">Otológico</option>
+                        <option value="Retal">Retal</option>
+                        <option value="Subcutâneo">Subcutâneo</option>
+                        <option value="Sublingual">Sublingual</option>
+                        <option value="Tópico">Tópico</option>
+                        <option value="Vaginal">Vaginal</option>
+                    </select>
+                </div>                <div class="form-group med-item-name">
+                    <label>Item:</label>
+                    <input type="text" class="med-item" name="med-item" placeholder="Ex: Amoxicilina + Clavulanato" maxlength="41">
+                    <span class="field-tooltip">Limite de 41 caracteres atingido.</span>
+                </div>                
+                <div class="form-group">
+                    <label>Posologia:</label>
+                    <input type="text" class="med-posology" name="med-posology" placeholder="Ex: 875+125 mg" maxlength="20">
+                    <span class="field-tooltip">Limite de caracteres atingido.</span>
+                </div>
+                <div class="form-group">
+                    <label>Qnt:</label>
+                    <input type="text" class="med-quantity" placeholder="Ex: 30 comprimidos">
+                    <span class="field-tooltip">"Qnt." limitado a 5 caracteres pois "Item" + "Posologia" excederam o limite.</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Forma de Utilização:</label>
+                <input type="text" class="med-usage" name="med-usage" placeholder="Ex: Tomar 01 comprimido de 12/12H, por 07 dias" maxlength="61">
+                <span class="field-tooltip">Limite de 61 caracteres atingido.</span>
+            </div>
+        </div>
+    </template>
+
+    <div id="print-output">
+    <!-- As duas vias serão geradas dinamicamente pelo JavaScript -->
+</div>
+
+<!-- Template para uma via -->
+<template id="via-template">
+    <div class="via-container">
+        <div class="print-header">
+            <h2>RECEITUÁRIO DE CONTROLE ESPECIAL</h2>
+            <div class="via-id">1ª VIA: FARMÁCIA <br> 2ª VIA: PACIENTE</div>
+        </div>
+        <div class="identificacao-emitente">
+            <p>IDENTIFICAÇÃO DO EMITENTE</p>
+            <p>Nome do profissional: ________________________________________________</p>
+            <p>CRM: _____________________________________________________________</p>
+        </div>
+        <div class="hospital-info">
+            <div class="logo-container">
+                <img src="logoo-HC.png" alt="Logo">
+            </div>
+            <div class="hospital-details">                   
+                <p>HOSPITAL DAS CLÍNICAS - UFG</p>
+                <p>CNPJ: 01.567.601/0002-24. Primeira Avenida s/nº Qd. 68. Lt. Área I</p>
+                <p>Setor Leste Universitário - CEP: 74.605-050 - Goiânia - GO</p>
+                <p>Fone: (62) 3269-8200</p>
+            </div>
+        </div>
+        <div class="main-content-container">
+            <div class="dados-paciente">
+                <p><strong>Paciente:</strong> <span class="print-patient-name"></span></p>
+                <p><strong>Endereço:</strong> <span class="print-patient-address"></span></p>
+            </div>
+            <div class="prescricao-container">
+                <p><strong>Prescrição:</strong></p>
+                <div class="print-med-list"></div>
+            </div>
+            
+            <div class="assinatura-emitente-area">
+                <div class="data-field-container">
+                    <span class="print-date-text">____/____/_______</span>
+                    <span class="label">Data</span>
+                </div>
+                <div class="signature-field-container">
+                    <span class="line">__________________________________________</span>
+                    <span class="label">Assinatura e carimbo do Emitente</span>
+                </div>
+            </div>                                          
+            <div class="identificacao-comprador-fornecedor">
+                <div class="comprador">
+                    <p><strong>IDENTIFICAÇÃO DO COMPRADOR</strong></p>
+                    <p>Nome: <span class="print-comprador-nome">_______________________________</span></p>
+                    <p>RG nº: <span class="print-comprador-rg">_________________</span> Órg. Em.: <span class="print-comprador-orgao">______</span></p>
+                    <p>Endereço: _____________________________</p>
+                    <p>Cidade: ______________________ UF: _____</p>
+                    <p>Telefone: _____________________________</p>
+                </div>
+                <div class="fornecedor">
+                    <p><strong>IDENTIFICAÇÃO DO FORNECEDOR</strong></p>                            
+                    <div class="signature-area">
+                        <div class="signature-field">
+                            <span class="line">____________________</span>
+                            <span class="label">Assinatura do Farmacêutico</span>
+                        </div>
+                        <div class="date-field-supplier">
+                            <span class="line">___/___/_____</span>
+                            <span class="label">Data</span>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+        </div>                                                                  
+    </div>
+</template>
+
+    <script src="script.js"></script>
+</body>
+</html>
