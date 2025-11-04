@@ -47,6 +47,26 @@ input[type="text"], select {
     border: 1px solid #ccc; /* Adiciona uma borda sutil para melhor definição */
     border-radius: 4px; /* Cantos levemente arredondados */
 }
+
+/* Estilos para o contador de caracteres */
+.input-with-counter {
+    position: relative;
+}
+
+#patient-name {
+    /* Adiciona espaço à direita dentro do input para o aviso */
+    padding-right: 180px; 
+}
+
+.char-warning {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8em;
+    color: #dc3545; /* Vermelho de aviso */
+    display: none; /* Oculto por padrão */
+}
 .medication-item { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; position: relative; }
 .remove-item-btn {
     position: absolute;

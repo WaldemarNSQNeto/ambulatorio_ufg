@@ -7,9 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const addDateBtn = document.getElementById('add-date-btn');
     const generateBtn = document.getElementById('generate-doc-btn');
     const resetBtn = document.getElementById('reset-btn');
+    const duplicateBtn = document.getElementById('duplicate-btn');
+    const patientNameInput = document.getElementById('patient-name');
+    const charWarning = document.getElementById('char-limit-warning');
 
     // Variável para controlar o estado do botão "Datar" (ON/OFF)
     let isDateEnabled = false;
+
+    // Variável para controlar o estado do botão "Duplicar" (ON/OFF)
+    let isDuplicateEnabled = false;
 
     // Função para adicionar um novo item
     function addNewItem() {
@@ -23,6 +29,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         medList.appendChild(medItem);
+    }
+
+    // Função para mostrar aviso de limite de caracteres
+    function checkCharLimit() {
+        const maxLength = patientNameInput.maxLength;
+        const currentLength = patientNameInput.value.length;
+
+        // Mostra o aviso se o limite for atingido, senão o esconde
+        charWarning.style.display = (currentLength >= maxLength) ? 'block' : 'none';
     }
 
     // Função para datar o documento
@@ -128,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
         printOutputElement.style.display = 'block';
 
         const printWindow = window.open('', '_blank');
-        
 
         if (!printWindow) {
             printOutputElement.style.display = 'none'; // Esconde de volta se a janela falhar
@@ -136,8 +150,33 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 6. Montar o HTML completo para a nova janela
-        const printContent = printOutputElement.innerHTML;
+        // Determine a regra @page com base no status de duplicação
+        let pageStyle = '';
+        if (isDuplicateEnabled) {
+            pageStyle = `
+                @page {
+                    size: A4 landscape;
+                    margin: 1cm;
+                }
+            `;
+        } else {
+            pageStyle = `
+                @page {
+                    size: A4 portrait;
+                    margin: 2cm;
+                }
+            `;
+        }
+        // 6. Montar o HTML completo para a nova janela, considerando a duplicação
+        let printContent = '';
+        if (isDuplicateEnabled) {
+            // Se a duplicação estiver ativa, cria a estrutura com duas colunas
+            const singleRecipeHTML = printOutputElement.innerHTML;
+            printContent = `<div class="duplicate-container">${singleRecipeHTML}${singleRecipeHTML}</div>`;
+        } else {
+            // Senão, usa o conteúdo normal
+            printContent = printOutputElement.innerHTML;
+        }
         printOutputElement.style.display = 'none'; // Esconde de volta após capturar o conteúdo
 
         const printCSS = document.querySelector('link[href="print.css"]').outerHTML;
@@ -148,9 +187,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <head>
                 <meta charset="UTF-8">
                 <title>Receituário para Impressão</title>
+                <style>${pageStyle}</style> <!-- Injeta a regra @page dinâmica -->
                 ${printCSS}
             </head>
-            <body>
+            <body class="${isDuplicateEnabled ? 'landscape-mode' : ''}">
                 ${printContent}
             </body>
             </html>
@@ -171,10 +211,18 @@ document.addEventListener('DOMContentLoaded', () => {
         addDateBtn.classList.toggle('active'); // Adiciona/remove a classe 'active' para feedback visual
     }
 
+    // Função para alternar o estado da duplicação (ON/OFF)
+    function toggleDuplicate() {
+        isDuplicateEnabled = !isDuplicateEnabled;
+        duplicateBtn.classList.toggle('active');
+    }
+
     // Adiciona os ouvintes de eventos
     addItemBtn.addEventListener('click', addNewItem);
     addDateBtn.addEventListener('click', toggleDate); // O botão agora chama a função de alternância
     generateBtn.addEventListener('click', generateDocument);
+    patientNameInput.addEventListener('input', checkCharLimit);
+    duplicateBtn.addEventListener('click', toggleDuplicate);
 
     // Adiciona o evento de clique ao novo botão de reset
     resetBtn.addEventListener('click', () => {

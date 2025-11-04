@@ -2,10 +2,7 @@
 @media print {
 
     /* Define o tamanho da página */
-    @page {
-        size: A4;
-        margin: 2cm; /* Margem padrão de um documento A4 */
-    }
+    /* A regra @page é agora injetada dinamicamente pelo JavaScript */
 
     /* Esconde o formulário e mostra a saída */
     html, body {
@@ -13,6 +10,32 @@
         margin: 0;
         padding: 0;
         background: #fff; /* Fundo branco para impressão */
+    }
+
+    /* Container para as duas vias do receituário */
+    .duplicate-container {
+        display: flex;
+        width: 98%;
+        height: 98%;
+        gap: 0.5cm; /* Espaço entre as duas vias */
+        position: relative; /* Necessário para posicionar a linha de corte */
+    }
+
+    /* Linha de corte vertical no meio da página */
+    .duplicate-container::after {
+        content: '';
+        position: absolute;
+        left: 51%;
+        top: 0;
+        bottom: 0;
+        border-left: 1px dashed #888; /* Linha pontilhada cinza */
+        transform: translateX(-50%); /* Centraliza a linha perfeitamente */
+    }
+
+    .duplicate-container > .print-table {
+        width: 50%; /* Cada via ocupa metade do espaço */
+        height: 100%;
+        flex-shrink: 0;
     }
     
     /* 
