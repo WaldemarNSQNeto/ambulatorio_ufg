@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   
     // Exibe um alerta informando sobre a otimização para o Microsoft Edge
-    alert("Atenção: Este site foi desenvolvido e otimizado para o navegador Microsoft Edge, visando uma melhor integração com o sistema operacional Windows. Para garantir a melhor experiência e todas as funcionalidades, recomendamos o seu uso.");
+    alert("Atenção: Este site foi desenvolvido e otimizado para o navegador Microsoft Edge, visando uma melhor integração com o sistema operacional Windows. Para garantir a melhor experiência e todas as funcionalidades, utilize o navegador MICROSOFT EDGE. Obrigado!");
 
     // Seleciona o campo de busca e todos os cartões de documentos
     const searchInput = document.getElementById('search-input');
