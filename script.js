@@ -1,7 +1,8 @@
 // Aguarda o conteúdo da página carregar completamente
 document.addEventListener('DOMContentLoaded', () => {
-    alert('Para uma melhor experiência e compatibilidade com as ferramentas do Windows, recomendamos o uso do navegador Microsoft Edge, pois este site foi programado especialmente para ele.');
   
+    // Exibe um alerta informando sobre a otimização para o Microsoft Edge
+    alert("Atenção: Este site foi desenvolvido e otimizado para o navegador Microsoft Edge, visando uma melhor integração com o sistema operacional Windows. Para garantir a melhor experiência e todas as funcionalidades, recomendamos o seu uso.");
 
     // Seleciona o campo de busca e todos os cartões de documentos
     const searchInput = document.getElementById('search-input');
