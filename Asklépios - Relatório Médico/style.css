@@ -1,0 +1,235 @@
+/* Estilos básicos para o formulário ficar agradável */
+body { font-family: Arial, sans-serif; background-color: #f4f7f6; display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante que o body ocupe no mínimo a altura total da tela */
+}
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Aplicando a textura de grade sutil (copiada da tela de login) */
+    background-color: #f8f9fa; /* Cor de fundo da camada da textura */
+    background-image:
+        linear-gradient(rgba(173, 216, 230, 0.15) 1px, transparent 1px), /* Linhas horizontais */
+        linear-gradient(90deg, rgba(173, 216, 230, 0.15) 1px, transparent 1px); /* Linhas verticais */
+    background-size: 15px 15px; /* Tamanho das células da grade */
+    opacity: 0.5; /* Opacidade da camada da textura */
+    z-index: -1; /* Coloca a textura atrás do conteúdo do body */
+}
+#app-container { width: 800px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 8px; }
+.form-section { margin-bottom: 20px; }
+
+/* Estilos para o título principal da tela inicial */
+.main-title-container {
+    display: flex; /* Usa flexbox para alinhar a imagem e o texto */
+    align-items: center; /* Alinha verticalmente no centro */
+    flex-direction: column; /* Coloca a imagem acima do texto */
+    margin-bottom: 10px; /* Espaçamento abaixo do título */
+}
+.header-icon { height: 60px; margin-top: 20px; margin-bottom: 10px; } /* Tamanho e espaçamento da imagem */
+.header-divider {
+    width: 100%; /* Linha ocupa 80% da largura do container */
+    border: 0;
+    border-top: 1px solid #0c0c0c;
+    margin-top: 0px; /* Espaço acima da linha */
+}
+
+
+.form-group { margin-bottom: 10px; }
+label { display: block; margin-bottom: 5px; font-weight: bold; }
+input[type="text"], select, textarea {
+    font-family: inherit; /* Garante que a fonte seja a mesma do restante da página */
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc; /* Adiciona uma borda sutil para melhor definição */
+    border-radius: 4px; /* Cantos levemente arredondados */
+}
+
+/* Estilos para o editor de texto rico */
+.editor-toolbar {
+    background-color: #f1f3ef;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    padding: 5px;
+    border-radius: 4px 4px 0 0;
+}
+
+.editor-btn {
+    font-family: 'Times New Roman', Times, serif;
+    width: 30px;
+    height: 30px;
+    border: 1px solid transparent;
+    background-color: #fff;
+    cursor: pointer;
+    margin-right: 5px;
+    border-radius: 3px;
+}
+
+.editor-btn:hover {
+    background-color: #e0e0e0;
+    border-color: #ccc;
+}
+
+.editor-btn-list {
+    font-size: 14px;
+    font-weight: bold;
+    padding-bottom: 4px; /* Ajuste vertical para os ícones de lista */
+}
+
+.editable-div {
+    border: 1px solid #ccc;
+    padding: 8px;
+    min-height: 250px; /* Equivalente a rows="15" */
+    border-radius: 0 0 4px 4px;
+    background-color: #fff;
+    line-height: 1.5;
+}
+
+/* Estilos para o contador de caracteres */
+.input-with-counter {
+    position: relative;
+}
+
+#patient-name {
+    /* Adiciona espaço à direita dentro do input para o aviso */
+    padding-right: 180px; 
+}
+
+.char-warning {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8em;
+    color: #dc3545; /* Vermelho de aviso */
+    display: none; /* Oculto por padrão */
+}
+.medication-item { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; position: relative; }
+.remove-item-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 100%;
+    border: none;
+    background-color: #e0e0e0;
+    color: #555;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* A mágica da animação suave acontece aqui */
+    transition: all 0.2s ease-in-out;
+}
+.remove-item-btn:hover {
+    background-color: #dc3545; /* Vermelho 'perigo' */
+    color: #fff;
+    transform: scale(1.2); /* Aumenta o tamanho em 20% */
+}
+.grid-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr; /* 4 colunas, com a 2ª (Item) sendo mais larga */
+    gap: 10px;
+}
+
+/* Estilos para os botões de ação */
+.btn-primary, .btn-secondary, .btn-success, .btn-warning {
+    padding: 10px 11px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 10pt;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px); /* Efeito de "flutuar" */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.btn-secondary {
+    /* Adiciona um espaço à esquerda do botão "Datar?" */
+    margin-left: 10px;
+}
+
+.btn-success {
+    background-color: #f1f3ef; /* Verde sucesso, profissional */
+    color: rgb(0, 0, 0);
+    width: 100%; /* Ocupa toda a largura da seção */
+    padding: 10px; /* Um pouco mais de preenchimento para dar mais peso */
+    font-size: 12pt; /* Fonte ligeiramente maior */
+}
+
+.btn-success:hover {
+    background-color: #218838; /* Verde mais escuro no hover */
+    color: rgb(255, 255, 255);
+    transform: translateY(-2px); /* Efeito de "flutuar" */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Sombra mais pronunciada */
+}
+
+.btn-warning {
+    background-color: #f1d88d; /* Amarelo "aviso" */
+    color: #212529; /* Texto escuro para bom contraste */
+    width: 100%;
+    padding: 10px;
+    font-size: 12pt;
+    margin-top: 10px; /* Espaço entre os botões */
+}
+
+.btn-warning:hover {
+    background-color: #f3ba0e; /* Amarelo mais escuro no hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.btn-success:active {
+    transform: translateY(0); /* Efeito de "pressionar" ao clicar */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra menor, como se estivesse pressionado */
+}
+
+/* Estilo para o botão "Datar" quando estiver ativo (ON) */
+.btn-secondary.active {
+    background-color: #28a745; /* Mesma cor do botão de sucesso para indicar 'ligado' */
+    color: #fff;
+    border-color: #28a745;
+}
+
+/* Esconde a área de impressão na tela normal */
+#print-output {
+    display: none;
+}
+
+/* Estilos para o rodapé da página principal */
+.site-footer {
+    color: #6c757d;  
+    text-align: center;
+    width: 100%;
+    margin-top: auto;
+    margin-left: 0pt;
+
+    padding: 20px;   
+    font-size: 0.8em;    
+    padding: 4px;    
+    line-height: 1.2;
+}
+
+.footer-divider {
+    width: 100%; /* Linha ocupa metade da largura do container */
+    border: 0;
+    border-top: 1px solid #6c757d; /* Cor cinza bem clara */
+    margin-bottom: 0px; /* Espaço entre a linha e o texto do rodapé */
+}
