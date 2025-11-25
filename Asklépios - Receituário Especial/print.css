@@ -6,29 +6,33 @@
     }
 
     html, body {
-        display: flex !important; /* Adicionado para ser o container flex principal */
-        justify-content: center; /* Centraliza o conteúdo da impressão */
         margin: 0 !important;
         padding: 0 !important;
-        height: 100% !important;
+        height: auto !important; /* Permite que o corpo cresça para acomodar várias páginas */
         width: 100% !important;
-        overflow: hidden !important;
         background: #fff;
         font-family: 'Times New Roman', Times, serif; /* Mantido */
         font-size: 9pt;
         color: #000;
     }
-    
+
     body > header, #app-container, .site-footer {
         display: none !important;
     }
 
-    #print-output {
+    /* Novo container para cada página/lauda */
+    .print-page {
         display: flex !important;
+        flex-direction: row !important;
         width: 100% !important;
-        height: 100% !important;
-        page-break-inside: avoid !important;
-        flex-direction: row !important; /* Mantido para organizar as vias */
+        height: 100% !important; /* Ocupa a altura da área de impressão da página */
+        page-break-after: always; /* Força uma quebra de página DEPOIS de cada lauda */
+        page-break-inside: avoid !important; /* Evita que a lauda se quebre no meio */
+    }
+
+    /* Evita que uma página em branco seja impressa no final */
+    .print-page:last-child {
+        page-break-after: avoid;
     }
 
     .via-container {
@@ -163,12 +167,38 @@
     .prescricao-container {
         flex-grow: 1; /* Faz a prescrição ocupar o espaço restante */
         margin-top: 0.01cm; /* Espaçamento ajustado conforme solicitado */
+        position: relative; /* NECESSÁRIO para posicionar a marca d'água */
+        overflow: hidden; /* Garante que a marca d'água não vaze do container */
     }
 
     .prescricao-container p {
         margin-top: 0;
         font-size: 11pt; /* Garante que o título "Prescrição:" seja 11pt */
     }
+
+    /* Garante que o conteúdo da prescrição (texto e lista) fique SOBRE a marca d'água */
+    .prescricao-container > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Estilo da Marca d'água - APLICA-SE APENAS À SEGUNDA VIA */
+    .second-via .prescricao-container::before {
+        content: '2ª VIA';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        /* Centraliza e rotaciona o texto */
+        transform: translate(-50%, -50%) rotate(-45deg);
+        font-size: 60pt; /* Tamanho grande para preencher a área */
+        font-weight: bold;
+        color: #f3f2f291; /* Cinza claro */
+        opacity: 0.5; /* 50% de opacidade */
+        z-index: 0; /* Coloca o pseudo-elemento atrás do conteúdo */
+        pointer-events: none; /* Impede que a marca d'água interfira com a seleção de texto */
+    }
+
+
 
     .print-via-title {
         font-size: 10pt; /* Define o tamanho da fonte para o título da via */

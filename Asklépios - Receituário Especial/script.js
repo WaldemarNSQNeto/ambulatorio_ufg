@@ -11,14 +11,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const customDateInput = document.getElementById('custom-date-input');
     const generateBtn = document.getElementById('generate-doc-btn');
     const resetBtn = document.getElementById('reset-btn');
+    const continuoBtn = document.getElementById('add-continuo-btn');
+    const continuoContainer = document.getElementById('continuo-options-container');
+    const continuoInput = document.getElementById('continuo-months-input');
 
     // Variável para controlar o estado do botão "Datar" (ON/OFF)
     let isDateEnabled = false;
     // Variável para armazenar a data selecionada
     let selectedDate = null;
     let dateSelectionMode = null; // 'today' ou 'custom'
+    // Variáveis para o modo de uso contínuo
+    let isContinuoEnabled = false;
+    let renewalMonths = 0;
 
-    // Função para adicionar um novo item
+
+     // Função para adicionar um novo item
     function addNewItem() {
         const medItems = medList.querySelectorAll('.medication-item');
         const currentItemCount = medItems.length;
@@ -239,26 +246,63 @@ function generateDocument() {
         grouped.get(item.via).push(item);
     });
     
-    // 3. Determinar a data
-    let finalDate = null;
-    if (isDateEnabled && selectedDate) {
-        const day = String(selectedDate.getDate()).padStart(2, '0');
-        const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
-        const year = selectedDate.getFullYear();
-        finalDate = `${day}/${month}/${year}`;
-    }
-    
     // 4. Criar o container de impressão
     const printOutput = document.getElementById('print-output');
     printOutput.innerHTML = ''; // Limpa conteúdo anterior
-    
-    // 5. Criar DUAS vias idênticas usando o componente reutilizável
-    const via1 = createViaComponent(patient, buyer, grouped, finalDate);
-    const via2 = createViaComponent(patient, buyer, grouped, finalDate);
-    
-    printOutput.appendChild(via1);
-    printOutput.appendChild(via2);
-    
+
+    // 5. Determinar o número de receitas a gerar e o laço de geração
+    const totalRecipes = isContinuoEnabled && renewalMonths > 0 ? 1 + renewalMonths : 1;
+
+    for (let i = 0; i < totalRecipes; i++) {
+        let finalDate = null;
+
+        // Calcula a data para a iteração atual
+        if (isDateEnabled && selectedDate) {
+            const originalYear = selectedDate.getFullYear();
+            const originalMonth = selectedDate.getMonth();
+            const originalDay = selectedDate.getDate();
+
+            // O mês alvo é o mês original + o índice do loop
+            const targetMonth = originalMonth + i;
+            
+            // Cria uma data preliminar. O JS lida com o avanço do ano automaticamente.
+            let iterationDate = new Date(originalYear, targetMonth, originalDay);
+
+            // **TRATAMENTO DO DIA 31**
+            // Se o mês da data gerada não for o mês que queríamos, significa que o dia não existe
+            // (ex: pedimos 31 de Fev e o JS pulou para Março).
+            // Nesse caso, voltamos para o último dia do mês correto.
+            if (iterationDate.getMonth() !== (targetMonth % 12)) {
+                // Para pegar o último dia do mês 'targetMonth', pedimos o dia 0 do mês seguinte.
+                iterationDate = new Date(originalYear, targetMonth + 1, 0);
+            }
+
+            // Formata a data final
+            const day = String(iterationDate.getDate()).padStart(2, '0');
+            const month = String(iterationDate.getMonth() + 1).padStart(2, '0');
+            const year = iterationDate.getFullYear();
+            finalDate = `${day}/${month}/${year}`;
+        }
+
+        // Cria um wrapper para a página (lauda) que conterá as 2 vias
+        const pageWrapper = document.createElement('div');
+        pageWrapper.className = 'print-page';
+
+        // Cria as duas vias para a data calculada
+        const via1 = createViaComponent(patient, buyer, grouped, finalDate);
+        const via2 = createViaComponent(patient, buyer, grouped, finalDate);
+
+        // Adiciona a marca d'água na segunda via
+        via2.querySelector('.via-container').classList.add('second-via');
+
+        // Adiciona as vias ao wrapper da página
+        pageWrapper.appendChild(via1);
+        pageWrapper.appendChild(via2);
+        // Adiciona a página completa ao container de impressão
+        printOutput.appendChild(pageWrapper);
+    }
+
+
     // 6. Abrir janela para impressão (mantenha o resto do código igual)
     try {
         printOutput.style.display = 'block'; // Torna a área de impressão visível
@@ -269,7 +313,7 @@ function generateDocument() {
             return;
         }
 
-        const printContent = printOutput.outerHTML;
+        const printContent = printOutput.innerHTML;
         const mainCSS = document.querySelector('link[href="style.css"]').outerHTML;
         const printCSS = document.querySelector('link[href="print.css"]').outerHTML;
 
@@ -313,12 +357,37 @@ function generateDocument() {
             dateOtherBtn.classList.remove('active');
             customDateInput.classList.add('hidden');
             customDateInput.value = '';
+            // Desativa e reseta o uso contínuo se a data for desativada
+            if (isContinuoEnabled) {
+                toggleContinuo();
+            }
         }
     }
+
+    // Função para alternar o estado do Uso Contínuo (ON/OFF)
+    function toggleContinuo() {
+        // Só permite ativar o uso contínuo se a data estiver habilitada
+        if (!isContinuoEnabled && !isDateEnabled) {
+            alert('Por favor, ative e selecione uma data antes de habilitar o uso contínuo.');
+            return;
+        }
+
+        isContinuoEnabled = !isContinuoEnabled;
+        continuoBtn.classList.toggle('active');
+        continuoContainer.classList.toggle('visible');
+
+        // Se desativado, reseta tudo
+        if (!isContinuoEnabled) {
+            renewalMonths = 0;
+            continuoInput.value = '';
+        }
+    }
+
 
     // Adiciona os ouvintes de eventos
     addItemBtn.addEventListener('click', addNewItem);
     addDateBtn.addEventListener('click', toggleDate);
+    continuoBtn.addEventListener('click', toggleContinuo);
     generateBtn.addEventListener('click', generateDocument);
 
     dateTodayBtn.addEventListener('click', () => {
@@ -390,6 +459,16 @@ function generateDocument() {
             customDateInput.classList.add('input-success');
         }
     });
+
+    continuoInput.addEventListener('input', () => {
+        const months = parseInt(continuoInput.value, 10);
+        if (months >= 12) {
+            alert('As boas práticas não recomendam renovação acima de 01 ano de forma irrestrita.');
+        }
+        // Garante que o valor não seja negativo ou zero
+        renewalMonths = months > 0 ? months : 0;
+    });
+
 
     // Adiciona o evento de clique ao novo botão de reset
     resetBtn.addEventListener('click', () => {

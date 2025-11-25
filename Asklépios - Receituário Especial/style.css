@@ -127,9 +127,10 @@ input[type="text"], select {
 
 .action-buttons-container {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-start; /* Alinha todos os botões à esquerda */
+    align-items: center; /* Alinha pelo topo para acomodar os novos controles */
     margin-top: 10px;
+    gap: 10px; /* Adiciona um espaço entre os grupos de botões */
 }
 
 .date-controls {
@@ -166,10 +167,6 @@ input[type="text"], select {
 .btn-secondary:hover {
     transform: translateY(-2px); /* Efeito de "flutuar" */
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
-.btn-secondary {
-    margin-left: 10px; /* Não é mais necessário com a nova estrutura */
 }
 
 .btn-success {
@@ -209,7 +206,7 @@ input[type="text"], select {
 
 /* --- Estilos para a nova seção de data --- */
 /* Efeito de animação "Surpreenda-me!" */
-#date-options-container {
+#date-options-container, #continuo-options-container {
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -221,7 +218,7 @@ input[type="text"], select {
     transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animação suave com um leve "bounce" */
 }
 
-#date-options-container.visible {
+#date-options-container.visible, #continuo-options-container.visible {
     /* Estado final (visível) */
     opacity: 1;
     transform: translateX(0); /* Volta para a posição original */
@@ -284,6 +281,20 @@ input[type="text"], select {
     gap: 5px;
 }
 /* --- Fim dos estilos de data --- */
+/* --- Início dos estilos de Uso Contínuo --- */
+#continuo-options-container {
+    margin-left: 10px;
+}
+#continuo-options-container label {
+    font-size: 9pt;
+    font-weight: normal;
+}
+#continuo-months-input {
+    width: 60px;
+    padding: 5px 8px;
+    font-size: 9pt;
+}
+/* --- Fim dos estilos de Uso Contínuo --- */
 
 /* Estilo para o botão "Datar" quando estiver ativo (ON) */
 .btn-secondary.active {
