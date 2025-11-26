@@ -7,7 +7,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Seleciona o campo de busca e todos os cartões de documentos
     const searchInput = document.getElementById('search-input');
     const cards = document.querySelectorAll('.card');
+    const noResultsMessage = document.getElementById('no-results-message');
     const clearSearchBtn = document.getElementById('clear-search-btn');
+
+    // --- Lógica para automação do rodapé (Versão e Data) ---
+    const setupFooter = () => {
+        const appVersion = 'Alfa 1.4'; // Ponto central para atualizar a versão
+        const versionInfoSpan = document.getElementById('version-info');
+
+        if (versionInfoSpan) {
+            // Pega a data da última modificação do documento
+            const lastModifiedDate = new Date(document.lastModified);
+            const day = String(lastModifiedDate.getDate()).padStart(2, '0');
+            const month = String(lastModifiedDate.getMonth() + 1).padStart(2, '0'); // Mês é 0-indexado
+            const year = lastModifiedDate.getFullYear();
+            const formattedDate = `${day}/${month}/${year}`;
+
+            versionInfoSpan.textContent = `V. ${appVersion} (${formattedDate})`;
+        }
+    };
+    setupFooter();
 
     // Animação de entrada escalonada para os cartões
     cards.forEach((card, index) => {
@@ -19,6 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('keyup', (event) => {
         // Pega o texto digitado e converte para minúsculas para facilitar a comparação
         const searchTerm = event.target.value.toLowerCase();
+        let resultsFound = 0;
+    
 
         // Mostra ou esconde o botão de limpar
         if (searchTerm.length > 0) {
@@ -35,10 +56,18 @@ document.addEventListener('DOMContentLoaded', () => {
             // Verifica se o título do cartão inclui o texto da busca
             if (cardTitle.includes(searchTerm)) {
                 card.style.display = 'flex'; // Se incluir, mostra o cartão
+                resultsFound++;
             } else {
                 card.style.display = 'none'; // Se não incluir, esconde o cartão
             }
         });
+
+        // Mostra ou esconde a mensagem de "nenhum resultado"
+        if (resultsFound === 0 && searchTerm.length > 0) {
+            noResultsMessage.classList.remove('hidden');
+        } else {
+            noResultsMessage.classList.add('hidden');
+        }
     });
 
     // Adiciona um "ouvinte" para o clique no botão de limpar
@@ -51,8 +80,38 @@ document.addEventListener('DOMContentLoaded', () => {
         cards.forEach(card => {
             card.style.display = 'flex';
         });
+        // Garante que a mensagem de "nenhum resultado" esteja escondida
+        noResultsMessage.classList.add('hidden');
         // Coloca o foco de volta no campo de busca
         searchInput.focus();
+    });
+
+    // --- NOVO: Feedback visual (ripple) ao clicar nos cartões ---
+    cards.forEach(card => {
+        card.addEventListener('click', function (e) {
+            // Previne o efeito em cliques que não sejam o botão esquerdo do mouse
+            if (e.button !== 0) return;
+
+            const rect = card.getBoundingClientRect();
+
+            // Cria o elemento span que será a ondulação
+            const ripple = document.createElement('span');
+            
+            // Define um tamanho fixo para a ondulação antes da animação de escala
+            const size = 100; // em pixels
+            ripple.style.width = ripple.style.height = `${size}px`;
+
+            // Centraliza a ondulação no ponto do clique
+            ripple.style.left = `${e.clientX - rect.left - (size / 2)}px`;
+            ripple.style.top = `${e.clientY - rect.top - (size / 2)}px`;
+            ripple.classList.add('ripple');
+
+            // Adiciona a ondulação ao cartão e a remove após a animação
+            this.appendChild(ripple);
+            setTimeout(() => {
+                ripple.remove();
+            }, 600); // Duração deve ser a mesma da animação no CSS
+        });
     });
 
     // --- NOVO: Lógica para criar ícones de fundo animados ---
